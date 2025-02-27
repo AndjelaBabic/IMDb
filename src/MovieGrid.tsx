@@ -1,17 +1,11 @@
 import { Box } from "@mui/material";
 import { useState } from "react";
-import moviesData from "./assets/movies.json";
 import { MovieCard } from "./MovieCard";
-import { Movie } from "./types";
+import { useFilterAndSortMovies } from "./hooks/useFilterAndSortMovies";
 
 export const MovieGrid = () => {
   const [favorites, setFavorites] = useState<Record<number, boolean>>({});
-
-  const movies: Movie[] = moviesData.sort((a, b) => {
-    const ratingA = a.ratings.find((r) => r.id === "imdb")?.rating || 0;
-    const ratingB = b.ratings.find((r) => r.id === "imdb")?.rating || 0;
-    return ratingB - ratingA;
-  });
+  const movies = useFilterAndSortMovies();
 
   const toggleFavorite = (id: number) => {
     setFavorites((prev) => ({ ...prev, [id]: !prev[id] }));
