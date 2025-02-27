@@ -30,6 +30,11 @@ export const MovieCard = ({
       <CardContent>
         <Typography
           variant="h6"
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
         >
           {movie.title}
         </Typography>
