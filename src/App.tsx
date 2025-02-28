@@ -1,5 +1,5 @@
 import "./App.css";
-import { MovieGrid } from "./MovieGrid";
+import { MovieGrid } from "./Movies/MovieGrid";
 
 function App() {
   return <MovieGrid />;
