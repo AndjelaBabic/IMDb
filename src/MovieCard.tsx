@@ -1,5 +1,6 @@
 import { Star, StarBorder } from "@mui/icons-material";
 import {
+  Box,
   Card,
   CardContent,
   CardMedia,
@@ -29,6 +30,12 @@ const StyledTypography = styled(Typography)<{ $isSelected: boolean }>`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
+`;
+
+const StyledReleaseDate = styled(StyledTypography)<{ $isSelected: boolean }>`
+  opacity: 0.5;
+  font-size: 15px !important;
 `;
 
 const StyledIconButton = styled(IconButton)`
@@ -61,6 +68,11 @@ export const MovieCard = ({
   onClick,
   toggleFavorite,
 }: MovieCardProps) => {
+  const date = new Date(movie.release_date || "");
+  const formattedDate = `${date.getDate()}.${
+    date.getMonth() + 1
+  }.${date.getFullYear()}.`;
+
   return (
     <StyledCard onClick={onClick} $isSelected={isSelected}>
       <CardMedia
@@ -69,25 +81,27 @@ export const MovieCard = ({
         image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
         alt={movie.title}
       />
-      <CardContent>
+      <CardContent sx={{ paddingBottom: "3px!important" }}>
         <StyledTypography variant="h6" $isSelected={isSelected}>
           {movie.title}
         </StyledTypography>
-        <StyledTypography variant="body2" $isSelected={isSelected}>
-          {movie.release_date || "Unknown Date"}
-        </StyledTypography>
-        <StyledIconButton
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleFavorite(movie.id);
-          }}
-        >
-          {isFavorite ? (
-            <StyledStar $isSelected={isSelected} />
-          ) : (
-            <StyledStarBorder $isSelected={isSelected} />
-          )}
-        </StyledIconButton>
+        <Box display="flex" justifyContent="space-between">
+          <StyledReleaseDate variant="body2" $isSelected={isSelected}>
+            {formattedDate || "Unknown Date"}
+          </StyledReleaseDate>
+          <StyledIconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleFavorite(movie.id);
+            }}
+          >
+            {isFavorite ? (
+              <StyledStar $isSelected={isSelected} fontSize="small" />
+            ) : (
+              <StyledStarBorder $isSelected={isSelected} fontSize="small" />
+            )}
+          </StyledIconButton>
+        </Box>
       </CardContent>
     </StyledCard>
   );
