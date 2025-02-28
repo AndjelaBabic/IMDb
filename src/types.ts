@@ -12,3 +12,5 @@ export interface Movie {
   video: boolean;
   ratings: { id: string; rating: number }[];
 }
+
+export const NUMBER_OF_ITEMS_PER_ROW = 6;
