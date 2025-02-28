@@ -1,12 +1,12 @@
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { MovieCard } from "./MovieCard";
-import { useFilterAndSortMovies } from "./hooks/useFilterAndSortMovies";
+import { useInfiniteScroll } from "./hooks/useInfiniteScroll";
 
 export const MovieGrid = () => {
   const [favorites, setFavorites] = useState<Record<number, boolean>>({});
   const [selectedMovieId, setSelectedMovieId] = useState<number | undefined>();
-  const movies = useFilterAndSortMovies();
+  const { observerRef, loading, movies } = useInfiniteScroll();
 
   const toggleFavorite = (id: number) => {
     setFavorites((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -24,6 +24,8 @@ export const MovieGrid = () => {
           onClick={() => setSelectedMovieId(movie.id)}
         />
       ))}
+      <div ref={observerRef} style={{ height: "50px" }} />
+      {loading && <CircularProgress />}
     </Box>
   );
 };
