@@ -5,6 +5,7 @@ import { useFilterAndSortMovies } from "./hooks/useFilterAndSortMovies";
 
 export const MovieGrid = () => {
   const [favorites, setFavorites] = useState<Record<number, boolean>>({});
+  const [selectedMovieId, setSelectedMovieId] = useState<number | undefined>();
   const movies = useFilterAndSortMovies();
 
   const toggleFavorite = (id: number) => {
@@ -19,6 +20,8 @@ export const MovieGrid = () => {
           movie={movie}
           toggleFavorite={toggleFavorite}
           isFavorite={favorites[movie.id]}
+          isSelected={selectedMovieId === movie.id}
+          onClick={() => setSelectedMovieId(movie.id)}
         />
       ))}
     </Box>
