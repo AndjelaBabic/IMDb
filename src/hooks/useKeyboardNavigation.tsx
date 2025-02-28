@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { NUMBER_OF_ITEMS_PER_ROW } from "../types";
 
 export const useKeyboardNavigation = (
@@ -10,29 +10,33 @@ export const useKeyboardNavigation = (
   );
   const itemsPerRow = NUMBER_OF_ITEMS_PER_ROW;
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Enter" && selectedIndex !== undefined) {
-      onToggleFavorite(selectedIndex);
-    } else if (e.key === "ArrowDown" && selectedIndex !== undefined) {
-      setSelectedIndex((prev) =>
-        prev === undefined || prev + itemsPerRow >= totalItems
-          ? prev
-          : prev + itemsPerRow
-      );
-    } else if (e.key === "ArrowUp" && selectedIndex !== undefined) {
-      setSelectedIndex((prev) =>
-        prev === undefined || prev - itemsPerRow < 0 ? prev : prev - itemsPerRow
-      );
-    } else if (e.key === "ArrowRight" && selectedIndex !== undefined) {
-      setSelectedIndex((prev) =>
-        prev === undefined || prev + 1 >= totalItems ? prev : prev + 1
-      );
-    } else if (e.key === "ArrowLeft" && selectedIndex !== undefined) {
-      setSelectedIndex((prev) =>
-        prev === undefined || prev - 1 < 0 ? prev : prev - 1
-      );
-    }
-  };
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (selectedIndex === undefined) return;
+
+      let newIndex: number | undefined = selectedIndex;
+
+      if (e.key === "Enter") {
+        onToggleFavorite(selectedIndex);
+      } else if (
+        e.key === "ArrowDown" &&
+        selectedIndex + itemsPerRow < totalItems
+      ) {
+        newIndex = selectedIndex + itemsPerRow;
+      } else if (e.key === "ArrowUp" && selectedIndex - itemsPerRow >= 0) {
+        newIndex = selectedIndex - itemsPerRow;
+      } else if (e.key === "ArrowRight" && selectedIndex + 1 < totalItems) {
+        newIndex = selectedIndex + 1;
+      } else if (e.key === "ArrowLeft" && selectedIndex - 1 >= 0) {
+        newIndex = selectedIndex - 1;
+      }
+
+      if (newIndex !== selectedIndex) {
+        setSelectedIndex(newIndex);
+      }
+    },
+    [selectedIndex, itemsPerRow, onToggleFavorite, totalItems]
+  );
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
@@ -40,8 +44,7 @@ export const useKeyboardNavigation = (
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totalItems]);
+  }, [handleKeyDown]);
 
   return { selectedIndex, setSelectedIndex };
 };
